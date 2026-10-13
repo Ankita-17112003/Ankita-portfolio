@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState,useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   AnimatePresence,
@@ -176,31 +176,110 @@ function useIsWide() {
 // Same card design as before. On phones it shows only the service name until it is tapped.
 function ServiceCard({ s, i, open, onToggle }) {
   const isWide = useIsWide();
-  const expanded = isWide || open;
+  const reduce = useReducedMotion();
   const Icon = iconMap[s.icon] ?? Layers;
   const feeling = feelings[s.id];
   const panelId = `service-${s.id}`;
   const Head = isWide ? "div" : "button";
+  const ref = useRef(null)
+
+// Phone par card khulne ke baad, agar uska title header ke neeche chhup gaya ho ya content screen se bahar ho,
+// toh card ko dheere se screen mein laao, title ke saath
+useEffect(() => {
+  if (!open || isWide) return
+  const t = setTimeout(() => {
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    if (r.top < 72 || r.bottom > window.innerHeight) {
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    }
+  }, 320) // card ke khulne wali animation (0.3s) khatam hone ke baad
+  return () => clearTimeout(t)
+}, [open, isWide, reduce])
+
+  // Phone par card height 0 se auto tak khulta hai, saath mein halka fade
+  const collapse = {
+    initial: { height: 0, opacity: 0 },
+    animate: { height: "auto", opacity: 1 },
+    exit: { height: 0, opacity: 0 },
+    transition: { duration: reduce ? 0 : 0.3, ease: [0.4, 0, 0.2, 1] },
+    style: { overflow: "hidden" },
+  };
+
+  const iconBadge = (
+    <span className="grid size-12 place-items-center rounded-full bg-navy text-cyan ring-4 ring-cyan/15 transition-shadow duration-300 group-hover:ring-cyan/40 dark:bg-slate-800">
+      <Icon size={21} aria-hidden="true" />
+    </span>
+  );
+
+  // Card ke andar ka content (icon ko chhodkar)
+  const body = (
+    <>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+        {s.problem}
+      </p>
+
+      {feeling && (
+        <p className="mt-4 flex gap-2.5 rounded-2xl bg-sky-50 p-3.5 text-sm leading-relaxed text-slate-700 dark:bg-cyan/10 dark:text-slate-200">
+          <Heart
+            size={16}
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 text-sky-700 transition-transform duration-300 group-hover:scale-125 motion-reduce:transform-none dark:text-cyan"
+          />
+          <span>{feeling}</span>
+        </p>
+      )}
+
+      <ul className="mt-5 space-y-2 border-t border-slate-200 pt-5 text-sm dark:border-slate-800">
+        {s.deliverables.map((d) => (
+          <li key={d} className="flex gap-2.5">
+            <Check
+              size={16}
+              className="mt-0.5 shrink-0 text-sky-700 dark:text-cyan"
+              aria-hidden="true"
+            />
+            <span>{d}</span>
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href="#fl-contact"
+        className="mt-6 inline-flex min-h-11 items-center gap-2 pt-1 text-sm font-semibold text-sky-800 hover:text-sky-900 sm:mt-auto dark:text-cyan dark:hover:text-sky-300"
+      >
+        Let’s talk about this
+        <ArrowRight
+          size={16}
+          aria-hidden="true"
+          className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
+        />
+      </a>
+    </>
+  );
 
   return (
     <motion.li
+      ref={ref}
       custom={i}
       variants={cardVariants}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-60px" }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="group flex min-w-0 flex-col rounded-3xl border border-slate-200 p-5 transition-colors hover:border-sky-700/40 sm:p-6 dark:border-slate-800 dark:hover:border-cyan/50"
+      style={{
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: open ? "#38bdf8" : "rgba(148,163,184,0.4)",
+        backgroundColor: open ? "rgba(56,189,248,0.08)" : "rgba(148,163,184,0.06)",
+        boxShadow: open ? "0 0 0 1px rgba(56,189,248,0.5)" : "none",
+      }}
+      className="group flex min-w-0 flex-col rounded-3xl p-5 transition-colors duration-300 sm:p-6"
     >
-      {expanded && (
-        <span className="grid size-12 place-items-center rounded-full bg-navy text-cyan ring-4 ring-cyan/15 transition-shadow duration-300 group-hover:ring-cyan/40 dark:bg-slate-800">
-          <Icon size={21} aria-hidden="true" />
-        </span>
-      )}
+      {/* Icon title ke upar sirf laptop par. Phone par wo neeche, card ke andar khulta hai. */}
+      {isWide && <div className="pb-5">{iconBadge}</div>}
 
-      <h3
-        className={`${expanded ? "mt-5" : ""} text-lg font-semibold leading-snug`}
-      >
+      <h3 className="text-lg font-semibold leading-snug">
         <Head
           {...(!isWide && {
             type: "button",
@@ -221,48 +300,24 @@ function ServiceCard({ s, i, open, onToggle }) {
         </Head>
       </h3>
 
-      {expanded && (
+      {isWide ? (
         <div id={panelId} className="flex flex-1 flex-col">
-          <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-            {s.problem}
-          </p>
-
-          {feeling && (
-            <p className="mt-4 flex gap-2.5 rounded-2xl bg-sky-50 p-3.5 text-sm leading-relaxed text-slate-700 dark:bg-cyan/10 dark:text-slate-200">
-              <Heart
-                size={16}
-                aria-hidden="true"
-                className="mt-0.5 shrink-0 text-sky-700 transition-transform duration-300 group-hover:scale-125 motion-reduce:transform-none dark:text-cyan"
-              />
-              <span>{feeling}</span>
-            </p>
-          )}
-
-          <ul className="mt-5 space-y-2 border-t border-slate-200 pt-5 text-sm dark:border-slate-800">
-            {s.deliverables.map((d) => (
-              <li key={d} className="flex gap-2.5">
-                <Check
-                  size={16}
-                  className="mt-0.5 shrink-0 text-sky-700 dark:text-cyan"
-                  aria-hidden="true"
-                />
-                <span>{d}</span>
-              </li>
-            ))}
-          </ul>
-
-          <a
-            href="#fl-contact"
-            className="mt-6 inline-flex min-h-11 items-center gap-2 pt-1 text-sm font-semibold text-sky-800 hover:text-sky-900 sm:mt-auto dark:text-cyan dark:hover:text-sky-300"
-          >
-            Let’s talk about this
-            <ArrowRight
-              size={16}
-              aria-hidden="true"
-              className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
-            />
-          </a>
+          {body}
         </div>
+      ) : (
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div
+              key="panel"
+              id={panelId}
+              {...collapse}
+              className="flex flex-col"
+            >
+              <div className="pl-1 pt-4">{iconBadge}</div>
+              {body}
+            </motion.div>
+          )}
+        </AnimatePresence>
       )}
     </motion.li>
   );

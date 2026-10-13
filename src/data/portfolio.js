@@ -14,10 +14,10 @@ export const profile = {
   heroText:
     'I build responsive, user-friendly web applications with React, Node.js, Express and MongoDB, and I am exploring how AI can be integrated into them in practical ways.',
   about: [
-    'I am a web developer focused on building responsive, easy-to-use applications with React, JavaScript, Node.js, Express.js and MongoDB.',
-    'I am also exploring AI integration, including a locally running Ollama model connected to a React and Express app.',
-    'My goal is to keep growing as a developer, build practical software, and help businesses establish and improve their online presence.',
-  ],
+  'I am a web developer focused on building responsive, easy-to-use applications with React, JavaScript, Node.js, Express.js and MongoDB.',
+  'I am also exploring AI integration, including a locally running Ollama model connected to a React and Express app.',
+  'I am looking for a full-time MERN Stack or Full Stack role where I can keep growing and build practical software. I also take on freelance projects for small businesses and startups.',
+],
   aboutHighlights: [
     { label: 'Focus', value: 'MERN Stack web applications' },
     { label: 'Exploring', value: 'Practical AI integration' },
