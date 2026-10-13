@@ -57,6 +57,17 @@ function Home({ dark, onToggleTheme }) {
 export default function App() {
   const { dark, toggle } = useTheme()
 
+    // Counts every click on the resume (any link to a .pdf file): Hero, navbar and contact buttons.
+  useEffect(() => {
+    const onClick = (e) => {
+      const link = e.target.closest?.('a[href$=".pdf"]')
+      if (!link) return
+      window.gtag?.('event', 'resume_download', { link_url: link.href })
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [])
+  
   return (
     <>
       <ScrollManager />
