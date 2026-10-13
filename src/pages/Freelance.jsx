@@ -27,15 +27,17 @@ import {
   Sun,
   Heart,
   ChevronDown,
+  MapPin,
   Send,
 } from "lucide-react";
-import { GithubIcon } from "../components/icons";
+import { GithubIcon,LinkedinIcon  } from "../components/icons";
 import {
   contact,
   freelanceProjects,
   process as workProcess,
   profile,
   services,
+  socials ,
 } from "../data/portfolio";
 
 // ── Edit the copy for this page here ─────────────────────────────
@@ -386,7 +388,8 @@ function SectionHead({ title, intro }) {
 
 // The footer has a few links, the email and a copyright notice. The email can be copied with one tap.
 const footerCircle =
-  "grid size-11 place-items-center rounded-full border border-white/15 text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan hover:bg-cyan hover:text-navy motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+  "grid size-11 shrink-0 place-items-center rounded-full border border-white/15 text-slate-300 transition-colors hover:border-cyan hover:text-cyan"
+
 
 const footerLinks = [
   { href: "#fl-services", label: "Services" },
@@ -1266,121 +1269,143 @@ export default function Freelance({ dark, onToggleTheme }) {
         </MotionConfig>
       </main>
 
-      <footer className="relative bg-slate-950 text-slate-300">
-        <div
+     <footer className="relative bg-slate-950 text-slate-300">
+  <div
+    aria-hidden="true"
+    className="h-px bg-gradient-to-r from-transparent via-cyan/50 to-transparent"
+  />
+
+  <div className="mx-auto grid w-full max-w-6xl gap-6 px-5 py-8 sm:px-8 sm:py-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10">
+    {/* BRAND */}
+    <div>
+      <Link
+        to="/"
+        className="inline-flex items-center gap-3"
+        aria-label={`${profile.name}, back to portfolio`}
+      >
+        <span className="grid size-10 place-items-center rounded-full bg-navy font-display text-sm font-bold text-cyan ring-2 ring-cyan/50">
+          {profile.name
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .slice(0, 2)}
+        </span>
+        <span className="font-display text-lg font-bold tracking-wide text-white">
+          {profile.brand.replace(".DEV", "")}
+          <span className="text-cyan">.DEV</span>
+        </span>
+      </Link>
+
+      <p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-400">
+        Freelance web developer. Have an idea? I would love to hear it.
+      </p>
+
+      <a
+        href="#fl-contact"
+        className="group mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-cyan px-6 text-sm font-semibold text-navy transition-colors hover:bg-sky-300 sm:w-auto"
+      >
+        Start a project
+        <ArrowRight
+          size={16}
           aria-hidden="true"
-          className="h-px bg-gradient-to-r from-transparent via-cyan/50 to-transparent"
+          className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
         />
+      </a>
+    </div>
 
-        <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-12 sm:px-8 sm:py-14 md:grid-cols-[1.4fr_1fr_auto] md:gap-14">
-          {/* brand + warm closing line */}
-          <div>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-3"
-              aria-label={`${profile.name}, back to portfolio`}
-            >
-              <span className="grid size-11 place-items-center rounded-full bg-navy font-display text-sm font-bold text-cyan ring-2 ring-cyan/50">
-                {profile.name
-                  .split(" ")
-                  .map((w) => w[0])
-                  .join("")
-                  .slice(0, 2)}
-              </span>
-              <span className="font-display text-lg font-bold tracking-wide text-white">
-                {profile.brand.replace(".DEV", "")}
-                <span className="text-cyan">.DEV</span>
-              </span>
-            </Link>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
-              Freelance web developer. Have an idea? I would love to hear it,
-              and help turn it into something you are proud of.
-            </p>
+    {/* PAGE LINKS: phone par ek line mein wrap hote hain, laptop par ek column */}
+    <nav aria-label="On this page">
+      <p className="font-display text-xs font-semibold uppercase tracking-widest text-white">
+        On this page
+      </p>
+      <ul className="mt-1 flex flex-wrap gap-x-5 md:flex-col md:gap-x-0">
+        {footerLinks.map((l) => (
+          <li key={l.href}>
             <a
-              href="#fl-contact"
-              className="group mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-cyan px-5 text-sm font-semibold text-navy transition-colors hover:bg-sky-300"
+              href={l.href}
+              className="inline-flex min-h-10 items-center text-sm text-slate-400 transition-colors hover:text-cyan"
             >
-              Start a project
-              <ArrowRight
-                size={16}
-                aria-hidden="true"
-                className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none"
-              />
+              {l.label}
             </a>
-          </div>
+          </li>
+        ))}
+      </ul>
+    </nav>
 
-          {/* on-page links */}
-          <nav aria-label="On this page">
-            <p className="font-display text-sm font-semibold uppercase tracking-wider text-white">
-              On this page
-            </p>
-            <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm md:grid-cols-1">
-              {footerLinks.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="inline-flex min-h-8 items-center text-slate-400 transition-colors hover:text-cyan"
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+    {/* CONTACT */}
+    <div>
+      <p className="font-display text-xs font-semibold uppercase tracking-widest text-white">
+        Say hello
+      </p>
 
-          {/* get in touch + back to portfolio */}
-          <div>
-            <p className="font-display text-sm font-semibold uppercase tracking-wider text-white">
-              Say hello
-            </p>
-            <div className="mt-4 flex gap-3">
-              <a
-                href={`mailto:${contact.email}?subject=Freelance%20project%20enquiry`}
-                aria-label="Email me"
-                className={footerCircle}
-              >
-                <Mail size={18} aria-hidden="true" />
-              </a>
-              {contact.whatsapp && (
-                <a
-                  href={contact.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Chat on WhatsApp"
-                  className={footerCircle}
-                >
-                  <MessageCircle size={18} aria-hidden="true" />
-                </a>
-              )}
-            </div>
-            <Link
-              to="/"
-              className="group mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 px-4 text-sm font-semibold text-slate-200 transition-colors hover:border-cyan hover:text-cyan"
-            >
-              <ArrowLeft
-                size={16}
-                aria-hidden="true"
-                className="transition-transform group-hover:-translate-x-1 motion-reduce:transform-none"
-              />
-              Back to portfolio
-            </Link>
-          </div>
-        </div>
+      <a
+        href={`mailto:${contact.email}?subject=Freelance%20project%20enquiry`}
+        className="mt-1 inline-flex min-h-10 items-center gap-2 break-all text-sm text-slate-300 transition-colors hover:text-cyan"
+      >
+        <Mail size={16} aria-hidden="true" className="shrink-0 text-cyan" />
+        {contact.email}
+      </a>
 
-        {/* bottom bar */}
-        <div className="border-t border-white/10">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-5 text-sm text-slate-500 sm:px-8">
-            <div>
-              <p>
-                © {new Date().getFullYear()} {profile.name}
-              </p>
-            </div>
-            <a href="#" aria-label="Back to top" className={footerCircle}>
-              <ArrowUp size={18} aria-hidden="true" />
-            </a>
-          </div>
-        </div>
-      </footer>
+      <div className="mt-2 flex flex-wrap gap-3">
+        {socials.github && (
+          <a
+            href={socials.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub profile"
+            className={footerCircle}
+          >
+            <GithubIcon className="size-5" />
+          </a>
+        )}
+        {socials.linkedin && (
+          <a
+            href={socials.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn profile"
+            className={footerCircle}
+          >
+            <LinkedinIcon className="size-5" />
+          </a>
+        )}
+        {contact.whatsapp && (
+          <a
+            href={contact.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chat on WhatsApp"
+            className={footerCircle}
+          >
+            <MessageCircle size={18} aria-hidden="true" />
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+
+  {/* BOTTOM BAR */}
+  <div className="border-t border-white/10">
+    <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3 text-xs text-slate-500 sm:px-8 sm:text-sm">
+      <p>
+        © {new Date().getFullYear()} {profile.name}
+      </p>
+      <button
+        type="button"
+        aria-label="Back to top"
+        onClick={() =>
+          window.scrollTo({
+            top: 0,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+          })
+        }
+        className={footerCircle}
+      >
+        <ArrowUp size={18} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</footer>
     </div>
   );
 }
